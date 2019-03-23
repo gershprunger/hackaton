@@ -22,27 +22,6 @@ sessionStorage = {}
 def main():
 # Функция получает тело запроса и возвращает ответ.
     logging.info('Request: %r', request.json)
-	return '{
-  "response": {
-    "text": "Здравствуйте! Это мы, хороводоведы.",
-    "tts": "Здравствуйте! Это мы, хоров+одо в+еды.",
-    "buttons": [
-        {
-            "title": "Надпись на кнопке",
-            "payload": {},
-            "url": "https://example.com/",
-            "hide": true
-        }
-    ],
-    "end_session": false
-  },
-  "session": {
-    "session_id": "2eac4854-fce721f3-b845abba-20d60",
-    "message_id": 4,
-    "user_id": "AC9WC3DF6FCE052E45A4566A48E6B7193774B84814CE49A922E163B8B29881DC"
-  },
-  "version": "2.0"
-}'
 
     response = {
         "version": request.json['version'],
@@ -58,7 +37,7 @@ def main():
 
     return json.dumps(
         response,
-        ensure_ascii=True,
+        ensure_ascii=False,
         indent=2
     )
 
@@ -81,7 +60,7 @@ def handle_dialog(req, res):
         res['response']['text'] = 'Привет! Купи слона!'
         res['response']['buttons'] = get_suggests(user_id)
         return
-
+    
     # Обрабатываем ответ пользователя.
     if req['request']['original_utterance'].lower() in [
         'ладно',
@@ -93,8 +72,12 @@ def handle_dialog(req, res):
         res['response']['text'] = 'Слона можно найти на Яндекс.Маркете!'
         return
 
+    zlo = open('logile.txt','w')
+    zlo.write(req['request']['original_utterance'].lower())	
+    zlo.close()
+    
     # Если нет, то убеждаем его купить слона!
-    res['response']['text'] = 'Все говорят "%s", а ты купи слона!' % (
+    res['response']['text'] = 'Все говорят "%s", а ты убей слона!' % (
         req['request']['original_utterance']
     )
     res['response']['buttons'] = get_suggests(user_id)
